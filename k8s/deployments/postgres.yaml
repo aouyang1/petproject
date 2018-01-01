@@ -1,0 +1,44 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: postgres
+spec:
+  template:
+    metadata:
+      labels:
+        app: postgres
+    spec:
+      containers:
+        - image: "postgres:9.6.2"
+          name: postgres
+          env:
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: petfinder-config
+                  key: postgres_admin_username
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: petfinder-config
+                  key: postgres_admin_password
+            - name: PGDATA
+              valueFrom:
+                secretKeyRef:
+                  name: petfinder-config
+                  key: postgres_dbpath
+            - name: POSTGRES_DB
+              valueFrom:
+                secretKeyRef:
+                  name: petfinder-config
+                  key: petfinder_db
+          ports:
+            - containerPort: 5432
+              name: postgres
+          volumeMounts:
+            - name: postgres-storage
+              mountPath: /var/lib/postgresql/data
+      volumes:
+        - name: postgres-storage
+          persistentVolumeClaim:
+            claimName: postgres-pv-claim
