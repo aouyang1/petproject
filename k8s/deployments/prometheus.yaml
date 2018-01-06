@@ -1,0 +1,36 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  labels:
+    name: prometheus-deployment
+  name: prometheus
+spec:
+  template:
+    metadata:
+      labels:
+        name: prometheus
+    spec:
+      containers:
+      - image: quay.io/prometheus/prometheus:v1.0.1
+        name: prometheus
+        command:
+        - "/bin/prometheus"
+        args:
+        - "-config.file=/etc/prometheus/prometheus.yml"
+        - "-storage.local.path=/prometheus"
+        - "-storage.local.retention=8760h"
+        ports:
+        - containerPort: 9090
+          protocol: TCP
+        volumeMounts:
+        - mountPath: "/prometheus"
+          name: data-storage
+        - mountPath: "/etc/prometheus"
+          name: config-volume
+      volumes:
+      - persistentVolumeClaim:
+          claimName: prometheus-pv-claim
+        name: data-storage
+      - configMap:
+          name: prometheus-config
+        name: config-volume
