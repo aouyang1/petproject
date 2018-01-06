@@ -11,14 +11,16 @@ spec:
         name: prometheus
     spec:
       containers:
-      - image: quay.io/prometheus/prometheus:v1.0.1
+      - image: quay.io/prometheus/prometheus:v2.0.0
         name: prometheus
+        securityContext:
+          runAsUser: 0
         command:
         - "/bin/prometheus"
         args:
-        - "-config.file=/etc/prometheus/prometheus.yml"
-        - "-storage.local.path=/prometheus"
-        - "-storage.local.retention=8760h"
+        - "--config.file=/etc/prometheus/prometheus.yml"
+        - "--storage.tsdb.path=/prometheus"
+        - "--storage.tsdb.retention=8760h"
         ports:
         - containerPort: 9090
           protocol: TCP
