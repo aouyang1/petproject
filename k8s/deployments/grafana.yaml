@@ -1,0 +1,38 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: grafana
+spec:
+  template:
+    metadata:
+      labels:
+        app: grafana
+    spec:
+      containers:
+        - image: "grafana/grafana:4.6.3"
+          name: grafana
+          env:
+            - name: GF_SECURITY_ADMIN_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: grafana-config
+                  key: security_admin_password
+            - name: GF_SECURITY_ADMIN_USER
+              valueFrom:
+                secretKeyRef:
+                  name: grafana-config
+                  key: security_admin_user
+            - name: GF_SERVER_DOMAIN
+              value: "www.austin-ouyang.com"
+            - name: GF_SERVER_ROOT_URL
+              value: "%(protocol)s://%(domain)s/grafana/"
+          ports:
+            - containerPort: 3000
+              name: grafana
+          volumeMounts:
+            - name: grafana-storage
+              mountPath: /var/lib/grafana
+      volumes:
+        - name: grafana-storage
+          persistentVolumeClaim:
+            claimName: grafana-pv-claim
