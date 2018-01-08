@@ -1,13 +1,22 @@
+DROP TABLE IF EXISTS pet_option;
+DROP TABLE IF EXISTS pet_photo;
+DROP TABLE IF EXISTS pet_breed;
+DROP TABLE IF EXISTS breed;
+DROP TABLE IF EXISTS shelter;
+DROP TABLE IF EXISTS pet;
+
 CREATE TABLE IF NOT EXISTS breed (
   id serial,
   name text,
   animal text,
   created_on timestamp with time zone,
   updated_on timestamp with time zone,
-  PRIMARY KEY (id)
+  PRIMARY KEY (id),
+  CONSTRAINT unq_name_animal UNIQUE(name, animal)
 );
 
 CREATE INDEX on breed (animal);
+CREATE INDEX on breed (name, animal);
 
 CREATE TABLE IF NOT EXISTS shelter (
   id text,
