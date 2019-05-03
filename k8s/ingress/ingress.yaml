@@ -22,3 +22,10 @@ spec:
         backend:
           serviceName: wordpress
           servicePort: 80
+  - host: www.matrixprofiles.com
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: mpfrontend
+          servicePort: 80
